@@ -9,12 +9,14 @@ set cindent
 set smartindent
 set expandtab
 set t_Co=256
-"set clipboard=unnamedplus,autoselect
+set clipboard=unnamedplus,autoselect
 set clipboard=unnamed,autoselect
 set guioptions+=a
-"set fileencoding=utf-8
-"set fileencodings=utf-8,sjis,euc-jp,iso-2022-jp
-"set fileformat=unix
+set fileencoding=utf-8
+set fileencodings=utf-8,euc-jp,iso-2022-jp,sjis
+set fileformat=mac
+set fileformats=mac,unix,dos
+
 set hlsearch
 set expandtab
 
@@ -29,6 +31,9 @@ set wildmode=list,full
 noremap <Enter> o<ESC>
 nnoremap <silent> g/ *:Ag! <cword><cr>
 nnoremap <silent> g? *:Ag! <cword><cr>
+nnoremap <silent> <C-q> :QuickRun<cr>
+nnoremap <C-x> :QuickRun<cr>
+nnoremap <C-q> :QuickRun<cr>
 
 if has('vim_starting')
   set runtimepath+=~/.vim/bundle/neobundle.vim
@@ -40,6 +45,7 @@ call neobundle#begin(expand('~/.vim/bundle/'))
 
   NeoBundle 'Shougo/vimproc'
   NeoBundle 'Shougo/vimshell'
+  NeoBundle 'Shougo/unite.vim'
 
   "
   " Syntax
@@ -53,7 +59,7 @@ call neobundle#begin(expand('~/.vim/bundle/'))
   "NeoBundle 'nginx.vim'
   "NeoBundle 'tpope/vim-markdown'
   "NeoBundle 'scrooloose/syntastic'
-  "NeoBundle 'scrooloose/syntastic'
+  NeoBundle 'm2mdas/phpcomplete-extended'
   NeoBundle 'thinca/vim-quickrun'
   NeoBundle 'nathanaelkane/vim-indent-guides'
 
@@ -68,7 +74,7 @@ call neobundle#begin(expand('~/.vim/bundle/'))
   "NeoBundle 'tell-k/vim-browsereload-mac'
   "NeoBundle 'hail2u/vim-css3-syntax'
 
-  NeoBundle 'kchmck/vim-coffee-script'
+  "NeoBundle 'kchmck/vim-coffee-script'
 
   " NeoBundle 'taichouchou2/html5.vim'
   "NeoBundle 'plasticboy/vim-markdown'
@@ -84,7 +90,7 @@ call neobundle#begin(expand('~/.vim/bundle/'))
   "NeoBundle 'vim-scripts/twilight'
   "NeoBundle 'jonathanfilip/vim-lucius'
   "NeoBundle 'tomasr/molokai'
-
+  "NeoBundle 'morhetz/gruvbox'
 
   "NeoBundle 'altercation/vim-colors-solarized'
   "NeoBundle 'vim-scripts/Wombat'
@@ -121,11 +127,10 @@ NeoBundleCheck
 filetype plugin indent on
 syntax enable
 colorscheme railscasts
+"colorscheme gruvbox
 
-"NeoBundle 'Shougo/neobundle.vim'
+
 "NeoBundle 'VimClojure'
-"NeoBundle 'Shougo/vimshell'
-"NeoBundle 'Shougo/unite.vim'
 "NeoBundle 'Shougo/neocomplcache'
 "NeoBundle 'Shougo/neosnippet'
 "NeoBundle 'jpalardy/vim-slime'
@@ -161,7 +166,7 @@ let g:markdown = 'open -a Chrome'
 "
 " QuickRun
 "
-let g:quickrun_config={'*': {"outputter/buffer/split" : ":botright 8sp"}}
+let g:quickrun_config={'*': {"outputter/buffer/split" : ":above 8sp"}}
 
 "
 " Grep
@@ -173,3 +178,10 @@ autocmd QuickFixCmdPost gr* cwindow
 " Completion
 "
 "setlocal omnifunc=syntaxcomplete#Complete
+
+autocmd FileType php setlocal omnifunc=phpcomplete_extended#CompletePHP
+let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
+
+
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
