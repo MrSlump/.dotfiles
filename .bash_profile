@@ -9,7 +9,7 @@ export LANG=ja_JP.UTF-8
 #export PG_DUMP=/usr/pgsql-9.3
 
 export PSQL_EDITOR='vim +"set syntax=sql" '
-export HISTCONTROL=ignoredups
+
 export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:`npm bin`
@@ -18,13 +18,12 @@ export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
-export PS1='[\W]$(__git_ps1) \$ '
-
 export HISTSIZE=9999
 export EDITOR=vi
 export CLICOLOR=1
-export HISTCONTROL=ignoredups
 
+export PS1='\u@\h:\w$(__git_ps1) \$ '
+export PS1='\W$(__git_ps1) \$ '
 
 # Mac
 source /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-completion.bash
@@ -43,15 +42,10 @@ alias sc="screen"
 alias less="less -N"
 alias tmux="TERM=screen-256color-bce tmux"
 
-function share_history {
-    history -a
-    history -c
-    history -r
-}
-
-PROMPT_COMMAND='share_history'
-
-shopt -u histappend
+export HISTCONTROL=ignoreboth:erasedups   # no duplicate entries
+shopt -s histappend                       # append history file
+export PROMPT_COMMAND="history -a"        # update histfile after every command
+#PROMPT_COMMAND="history -a;history -c;history -r;"
 
 test "$TMUX" || tmux
 

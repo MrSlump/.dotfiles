@@ -9,11 +9,11 @@ set cindent
 set smartindent
 set expandtab
 set t_Co=256
-set clipboard=unnamedplus,autoselect
+"set clipboard=unnamedplus,autoselect
 set clipboard=unnamed,autoselect
 set guioptions+=a
 set fileencoding=utf-8
-set fileencodings=utf-8,euc-jp,iso-2022-jp,sjis
+set fileencodings=utf-8,sjis,euc-jp,iso-2022-jp
 set fileformat=mac
 set fileformats=mac,unix,dos
 
@@ -30,7 +30,7 @@ set wildmode=list,full
 
 noremap <Enter> o<ESC>
 nnoremap <silent> g/ *:Ag! <cword><cr>
-nnoremap <silent> g? *:Ag! <cword><cr>
+nnoremap <silent> g? #:Ag! <cword><cr>
 nnoremap <silent> <C-q> :QuickRun<cr>
 nnoremap <C-x> :QuickRun<cr>
 nnoremap <C-q> :QuickRun<cr>
@@ -50,36 +50,53 @@ call neobundle#begin(expand('~/.vim/bundle/'))
   "
   " Syntax
   "
-  "NeoBundle 'petdance/vim-perl'
-  "NeoBundle 'hotchpotch/perldoc-vim'
-  "NeoBundle 'c9s/perlomni.vim'
-  "NeoBundle 'vim-perl/vim-perl'
-  "NeoBundle 'JavaScript-syntax'
-  "NeoBundle 'jQuery'
-  "NeoBundle 'nginx.vim'
-  "NeoBundle 'tpope/vim-markdown'
-  "NeoBundle 'scrooloose/syntastic'
-  NeoBundle 'm2mdas/phpcomplete-extended'
+  NeoBundle 'scrooloose/syntastic'
   NeoBundle 'thinca/vim-quickrun'
   NeoBundle 'nathanaelkane/vim-indent-guides'
 
+  "
+  " Perl
+  "
+  NeoBundle 'petdance/vim-perl'
+  NeoBundle 'hotchpotch/perldoc-vim'
+  NeoBundle 'c9s/perlomni.vim'
+  NeoBundle 'vim-perl/vim-perl'
+
+  "
+  " PHP
+  "
+  NeoBundle 'm2mdas/phpcomplete-extended'
+
+  "NeoBundle 'nginx.vim'
+  "NeoBundle 'tpope/vim-markdown'
+  "NeoBundle 'plasticboy/vim-markdown'
+
+  "
+  " Web
+  "
   NeoBundle 'MatchTag'
   NeoBundle 'vim-scripts/matchit.zip'
+  NeoBundle 'taichouchou2/html5.vim'
+  NeoBundle 'hail2u/vim-css3-syntax'
+  NeoBundle 'mattn/emmet-vim'
+  NeoBundle 'mattn/webapi-vim'
 
-  "NeoBundle 'mattn/emmet-vim'
-  "NeoBundle 'mattn/webapi-vim'
-  "NeoBundle 'taichouchou2/html5.vim'
-  "NeoBundle 'pangloss/vim-javascript'
-  "NeoBundle 'open-browser.vim'
+  "
+  " JS
+  "
+  NeoBundle 'jQuery'
+  NeoBundle 'JavaScript-syntax'
+  NeoBundle 'pangloss/vim-javascript'
+  "NeoBundle 'michalliu/jsruntime'
+
+  "
+  " Browser
+  "
+  "NeoBundle 'tyru/open-browser.vim'
   "NeoBundle 'tell-k/vim-browsereload-mac'
-  "NeoBundle 'hail2u/vim-css3-syntax'
 
   "NeoBundle 'kchmck/vim-coffee-script'
-
-  " NeoBundle 'taichouchou2/html5.vim'
-  "NeoBundle 'plasticboy/vim-markdown'
   "NeoBundle 'kannokanno/previm'
-  "NeoBundle 'tyru/open-browser.vim'
 
   "
   " Color Scheme
@@ -91,7 +108,6 @@ call neobundle#begin(expand('~/.vim/bundle/'))
   "NeoBundle 'jonathanfilip/vim-lucius'
   "NeoBundle 'tomasr/molokai'
   "NeoBundle 'morhetz/gruvbox'
-
   "NeoBundle 'altercation/vim-colors-solarized'
   "NeoBundle 'vim-scripts/Wombat'
   "NeoBundle 'vim-scripts/rdark'
@@ -135,7 +151,6 @@ colorscheme railscasts
 "NeoBundle 'Shougo/neosnippet'
 "NeoBundle 'jpalardy/vim-slime'
 "NeoBundle 'Shougo/neosnippet-snippets'
-"NeoBundle 'scrooloose/syntastic'
 "NeoBundle 'https://bitbucket.org/kovisoft/slimv'
 "NeoBundle 'https://github.com/leafgarland/typescript-vim.git'
 "NeoBundle 'https://github.com/clausreinke/typescript-tools.git'
@@ -185,3 +200,14 @@ let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
 
 filetype plugin on
 set omnifunc=syntaxcomplete#Complete
+
+"
+" Syntastic ON
+"
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
