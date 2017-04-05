@@ -9,13 +9,12 @@ set cindent
 set smartindent
 set expandtab
 set t_Co=256
-"set clipboard=unnamedplus,autoselect
 set clipboard=unnamed,autoselect
 set guioptions+=a
 set fileencoding=utf-8
 set fileencodings=utf-8,sjis,euc-jp,iso-2022-jp
-set fileformat=mac
-set fileformats=mac,unix,dos
+set fileformat=unix
+set fileformats=unix,dos,mac
 
 set hlsearch
 set expandtab
@@ -76,7 +75,6 @@ call neobundle#begin(expand('~/.vim/bundle/'))
   "
   NeoBundle 'MatchTag'
   NeoBundle 'vim-scripts/matchit.zip'
-  NeoBundle 'taichouchou2/html5.vim'
   NeoBundle 'hail2u/vim-css3-syntax'
   NeoBundle 'mattn/emmet-vim'
   NeoBundle 'mattn/webapi-vim'
@@ -97,6 +95,19 @@ call neobundle#begin(expand('~/.vim/bundle/'))
 
   "NeoBundle 'kchmck/vim-coffee-script'
   "NeoBundle 'kannokanno/previm'
+
+  " 
+  "  Ruby
+  "
+  NeoBundle 'slim-template/vim-slim'
+
+  "
+  " TypeScript
+  "
+  NeoBundle 'leafgarland/typescript-vim'
+  NeoBundle 'HerringtonDarkholme/yats.vim'
+  NeoBundle 'Quramy/tsuquyomi'
+  NeoBundle 'clausreinke/typescript-tools.vim'
 
   "
   " Color Scheme
