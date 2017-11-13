@@ -11,7 +11,7 @@ set -o vi
 export PSQL_EDITOR='vim +"set syntax=sql" '
 
 export PATH=/usr/local/bin:$PATH
-export PATH=$PATH:`npm bin`
+#export PATH=$PATH:`npm bin`
 export PATH=$PATH:~/MyInstall
 
 export HISTSIZE=9999
@@ -21,17 +21,30 @@ export CLICOLOR=1
 export PS1='\u@\h:\w$(__git_ps1) \$ '
 export PS1='\W$(__git_ps1) \$ '
 
-# Mac
-source ~/.dotfiles/git-completion.bash
-source ~/.dotfiles/git-prompt.sh
-source /usr/local/Cellar/tmux/*/etc/bash_completion.d/tmux 
+test -f $(brew --prefix)/etc/bash_completion && {
+  source $(brew --prefix)/etc/bash_completion
+}
+test -f $(brew --prefix)/etc/bash_completion.d/git-completion.bash && {
+  source $(brew --prefix)/etc/bash_completion.d/git-completion.bash
+}
+
+test -f ~/.dotfiles/git-prompt.sh && {
+  #export GIT_PS1_SHOWUNTRACKEDFILES=true
+  #export GIT_PS1_SHOWCOLORHINTS=true
+  #export GIT_PS1_SHOWDIRTYSTATE=true
+  #export PROMPT_COMMAND='__git_ps1 "${debian_chroot:+($debian_chroot)}\[\033[01;32m\] \u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]" "\$ "'
+  source ~/.dotfiles/git-prompt.sh
+}
 
 alias ll="ls -ltr"
 alias vi="vim"
 alias h="history"
 alias sc="screen"
 alias less="less -N"
-alias tmux="TERM=screen-256color-bce tmux"
+alias dirs="dirs -v"
+#alias tmux="TERM=screen-256color-bce tmux -u"
+alias tmux="tmux -u"
+alias ag="ag --ignore-dir '*node_module*'"
 
 export HISTCONTROL=ignoreboth:erasedups   # no duplicate entries
 shopt -s histappend                       # append history file
@@ -49,3 +62,13 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/mac/.sdkman"
 [[ -s "/Users/mac/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/mac/.sdkman/bin/sdkman-init.sh"
+
+
+test -f ~/.buz && {
+  source ~/.buz
+}
+
+
+test -f ~/.dirs && {
+  source ~/.dirs
+}

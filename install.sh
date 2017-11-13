@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -eux
 
 #
 # Xcode
@@ -10,75 +10,93 @@ xcode-select -p || xcode-select --install
 #
 which brew || {
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  brew update
   brew tap caskroom/cask
+  brew tap homebrew/completions
+  brew update
 }
 
 #
 # dotfiles
 #
-#git clone https://github.com/TaroYanagi/.dotfiles.git ~/
-#find ~/.dotfiles -maxdepth 1 -type f -name '.*' -exec ln -s {} ~ \;
-#find ~/.dotfiles -type f -exec echo {} ~ +;
+test -d ~/.dotfiles || {
+  git clone https://github.com/TaroYanagi/.dotfiles.git ~/
+  find ~/.dotfiles -maxdepth 1 -type f -name '.*' -exec ln -s {} ~ \;
+}
 
 #
 # Vim & Neobundle
 #
-#brew install vim
-#curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh | sh
-#cd ~/.vim/bundle/vimproc && make
-#vim +NeoBundleInstall +qall
+(vim --version | grep +clip ) || {
+  brew install vim
+  git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+  #curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh | sh
+  #cd ~/.vim/bundle/vimproc && make
+  #vim +NeoBundleInstall +qall
+}
 
 #
 # Tmux
 #
 which tmux || brew install tmux
 which reattach-to-user-namespace || brew install reattach-to-user-namespace
-test -f ~/.tmux/plugins/tpm || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+test -d ~/.tmux/plugins/tpm || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 #
-# Command
+# Command Tools
 #
-which the_silver_searcher || brew install the_silver_searcher
+which ag || brew install the_silver_searcher
 which cocot || brew install cocot
+which tree || brew install tree
 
 #
-# NodeJS & AngularJS & TypeScript
+# Python
 #
-#brew install yarn
-#brew install npm
-#cd ~ && npm install angular-cli
-#cd ~ && npm install phantomjs
+which pip || brew install pip
+which python3 || brew install python3
+
 
 #
-# TypeScript
+# NodeJS Package Tools
 #
-#cd ~ && npm install typescript
-#cd ~ && npm install typings
-#yarn add awesome-typescript-loader source-map-loader
+which npm || brew install npm
+which yarn || brew install yarn
 
-# 
-# React 
-# 
-#cd ~ && npm install create-react-app
-#cd ~ && yarn add react react-dom
+#
+# NodeJS Packages
+#
+cd ~ && {
+  printf
+  #
+  # AngularJS Cli
+  #
+  #npm install rxjs
+  #npm install angular-cli
+
+  #npm ls phantomjs || npm install phantomjs
+
+  #
+  # TypeScript
+  #
+  #npm ls typescript || npm install typescript
+  #npm ls typings || npm install typings
+  #yarn list awesome-typescript-loader || yarn add awesome-typescript-loader
+  #yarn list source-map-loader || yarn add source-map-loader
+
+  ##
+  ## React
+  ##
+  ##npm ls create-react-app || npm install create-react-app
+  #yarn list react || yarn add react-dom
+  #yarn list react-dom || yarn add react-dom
+
+  #npm ls json2yaml || npm install json2yaml
+}
 
 
 #
 # Golang
 #
 which go || brew install go
-
-#
-# Kotin
-#
-which kotlin || brew install kotlin
-#
-# This is unsure.
-#brew cask install xamarin-jdk
-#
-#brew install Caskroom/cask/java
-
 
 #
 # Setup tools
@@ -88,19 +106,69 @@ which kotlin || brew install kotlin
 #
 # Apache Kafka
 #
-#brew install kafka 
+#brew install kafka
+
+#
+# AWS-CLI
+#
+which aws || {
+  pip3 install --user --upgrade awscli
+}
+
+#
+# Java8 & Maven
+#
+(java -version 2>&1 | grep 1.8) || {
+  brew tap caskroom/cask
+  brew tap caskroom/version
+  brew cask install java8
+}
+which mvn || brew install maven
+
+#
+# Scala
+#
+brew install sbt
+
+#
+# Kotin
+#
+which kotlin || brew install kotlin
+
+
+#
+# Bosh
+#
+which bosh || {
+    brew tap cloudfoundry/tap
+    brew install bosh-cli
+}
 
 #
 # Docker
 #
 which docker || {
-  brew install docker 
+  brew cask install docker
   brew cask install docker-toolbox
 }
-which virtualbox || brew cask install virtualbox 
+
 
 #
-# Movie Edtior
+# VirtualBox
+#
+#which virtualbox || brew cask install virtualbox
+#
+# Vagrant
+#
+#which vagrant || {
+#  brew cask install vagrant
+#  brew cask install vagrant-manager
+#}
+
+
+
+#
+# FFMpeg
 #
 #brew reinstall ffmpeg -HEAD $(brew options ffmpeg | grep with-)
 #brew install theora
