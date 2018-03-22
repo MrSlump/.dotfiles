@@ -47,6 +47,10 @@ test -d ~/.tmux/plugins/tpm || git clone https://github.com/tmux-plugins/tpm ~/.
 which ag || brew install the_silver_searcher
 which cocot || brew install cocot
 which tree || brew install tree
+which sshpass || {
+  brew tap hudochenkov/sshpass
+  brew install sshpass
+}
 
 #
 # Python
@@ -166,6 +170,11 @@ which docker || {
 #}
 
 
+#
+# Load Testing
+#
+which jmeter || brew install jmeter
+which wrk || brew install wrk
 
 #
 # FFMpeg
