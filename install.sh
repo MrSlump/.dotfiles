@@ -44,9 +44,9 @@ test -d ~/.tmux/plugins/tpm || git clone https://github.com/tmux-plugins/tpm ~/.
 #
 # Command Tools
 #
-which ag || brew install the_silver_searcher
-which cocot || brew install cocot
 which tree || brew install tree
+which rg || brew install ripgrep
+which cocot || brew install cocot
 which sshpass || {
   brew tap hudochenkov/sshpass
   brew install sshpass
@@ -149,6 +149,14 @@ which bosh || {
 }
 
 #
+# CI
+#
+which drone || {
+  brew tap drone/drone
+  brew install drone
+}
+
+#
 # Docker
 #
 which docker || {
@@ -171,10 +179,15 @@ which docker || {
 
 
 #
-# Load Testing
+# Loadin Testing
 #
 which jmeter || brew install jmeter
 which wrk || brew install wrk
+
+brew install bash-completion
+brew install docker-completion
+brew install docker-compose-completion
+brew install docker-machine-completion
 
 #
 # FFMpeg
