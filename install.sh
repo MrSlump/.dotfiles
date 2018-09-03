@@ -124,7 +124,7 @@ which aws || {
 #
 (java -version 2>&1 | grep 1.8) || {
   brew tap caskroom/cask
-  brew tap caskroom/version
+  brew tap caskroom/versions
   brew cask install java8
 }
 which mvn || brew install maven
