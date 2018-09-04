@@ -55,9 +55,14 @@ which sshpass || {
 #
 # Python
 #
-which pip || brew install pip
 which python3 || brew install python3
 
+#
+# AWS-CLI
+#
+which aws || {
+  pip3 install --user --upgrade awscli
+}
 
 #
 # NodeJS Package Tools
@@ -111,12 +116,6 @@ which go || brew install go
 #
 #brew install kafka
 
-#
-# AWS-CLI
-#
-which aws || {
-  pip3 install --user --upgrade awscli
-}
 
 #
 # Java8 & Maven
