@@ -19,7 +19,7 @@ which brew || {
 # dotfiles
 #
 test -d ~/.dotfiles || {
-  git clone https://github.com/TaroYanagi/.dotfiles.git ~/
+  git clone https://github.com/TaroYanagi/.dotfiles.git ~/.dotfiles
   find ~/.dotfiles -maxdepth 1 -type f -name '.*' -exec ln -s {} ~ \;
 }
 
@@ -68,8 +68,7 @@ which yarn || brew install yarn
 #
 # NodeJS Packages
 #
-cd ~ && {
-  printf
+#cd ~ && {
   #
   # AngularJS Cli
   #
@@ -94,7 +93,7 @@ cd ~ && {
   #yarn list react-dom || yarn add react-dom
 
   #npm ls json2yaml || npm install json2yaml
-}
+#}
 
 
 #
