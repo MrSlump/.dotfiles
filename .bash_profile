@@ -13,6 +13,7 @@ export PSQL_EDITOR='vim +"set syntax=sql" '
 export PATH=/usr/local/bin:$PATH
 #export PATH=$PATH:`npm bin`
 export PATH=$PATH:~/MyInstall
+export PATH=$PATH:~/.composer/vendor/bin
 
 export HISTSIZE=9999
 export EDITOR=vi
@@ -21,12 +22,7 @@ export CLICOLOR=1
 export PS1='\u@\h:\w$(__git_ps1) \$ '
 export PS1='\W$(__git_ps1) \$ '
 
-test -f $(brew --prefix)/etc/bash_completion && {
-  source $(brew --prefix)/etc/bash_completion
-}
-test -f $(brew --prefix)/etc/bash_completion.d/git-completion.bash && {
-  source $(brew --prefix)/etc/bash_completion.d/git-completion.bash
-}
+[ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
 
 test -f ~/.dotfiles/git-prompt.sh && {
   #export GIT_PS1_SHOWUNTRACKEDFILES=true
@@ -44,7 +40,8 @@ alias less="less -N"
 alias dirs="dirs -v"
 #alias tmux="TERM=screen-256color-bce tmux -u"
 alias tmux="tmux -u"
-alias ag="ag --ignore-dir '*node_module*'"
+alias name="find . -name"
+alias iname="find . -iname"
 
 export HISTCONTROL=ignoreboth:erasedups   # no duplicate entries
 shopt -s histappend                       # append history file

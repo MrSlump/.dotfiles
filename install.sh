@@ -16,6 +16,11 @@ which brew || {
 }
 
 #
+# git & completion
+#
+brew list bash-completion || brew install git bash-completion
+
+#
 # dotfiles
 #
 test -d ~/.dotfiles || {
@@ -50,6 +55,25 @@ which cocot || brew install cocot
 which sshpass || {
   brew tap hudochenkov/sshpass
   brew install sshpass
+}
+which ngrok || brew cask install ngrok
+
+#
+# PHP
+#
+which composer || {
+    brew install composer
+
+    composer global require pdepend/pdepend
+    composer global require phing/phing
+    composer global require phploc/phploc
+    composer global require phpunit/phpunit
+    composer global require phpunit/dbunit
+    composer global require phpdocumentor/phpdocumentor
+    composer global require phpmetrics/phpmetrics
+    composer global require phpmd/phpmd
+    composer global require squizlabs/php_codesniffer
+    composer global require sebastian/phpcpd
 }
 
 #
