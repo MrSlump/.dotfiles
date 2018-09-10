@@ -29,14 +29,12 @@ test -d ~/.dotfiles || {
 }
 
 #
-# Vim & Neobundle
+# Vim & Vundle
 #
 (vim --version | grep +clip ) || {
   brew install vim
   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-  #curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh | sh
-  #cd ~/.vim/bundle/vimproc && make
-  #vim +NeoBundleInstall +qall
+  vim +PlugInstall +qall
 }
 
 #
