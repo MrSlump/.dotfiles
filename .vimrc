@@ -109,7 +109,11 @@ Plug 'jelera/vim-javascript-syntax'
 " php
 "" PHP Bundle
 Plug 'arnaud-lb/vim-php-namespace'
-
+Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-projectionist'
+Plug 'roxma/nvim-completion-manager'
+Plug 'noahfrederick/vim-composer'
+Plug 'noahfrederick/vim-laravel'
 
 "*****************************************************************************
 "*****************************************************************************
