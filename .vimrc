@@ -47,7 +47,7 @@ Plug 'scrooloose/syntastic'
 Plug 'Yggdroot/indentLine'
 Plug 'avelino/vim-bootstrap-updater'
 Plug 'sheerun/vim-polyglot'
-Plug 'w0rp/ale'
+"Plug 'w0rp/ale'
 Plug 'ervandew/supertab'
 
 if isdirectory('/usr/local/opt/fzf')
@@ -107,7 +107,7 @@ Plug 'jelera/vim-javascript-syntax'
 
 
 " php
-"" PHP Bundle
+" PHP Bundle
 Plug 'arnaud-lb/vim-php-namespace'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-projectionist'
