@@ -14,6 +14,11 @@ export PATH=/usr/local/bin:$PATH
 #export PATH=$PATH:`npm bin`
 export PATH=$PATH:~/MyInstall
 export PATH=$PATH:~/.composer/vendor/bin
+export PATH=$PATH:~/.pub-cache/bin
+
+export GOPATH="${HOME}/.go"
+export GOROOT="$(brew --prefix golang)/libexec"
+export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"
 
 export HISTSIZE=9999
 export EDITOR=vi
@@ -32,6 +37,21 @@ test -f ~/.dotfiles/git-prompt.sh && {
   source ~/.dotfiles/git-prompt.sh
 }
 
+
+export LC_ALL=en_US.UTF-8
+export PATH=$PATH:$HOME/Library/Python/2.7/bin
+powerline-daemon -q
+POWERLINE_BASH_CONTINUATION=1
+POWERLINE_BASH_SELECT=1
+source `pip3 show powerline-status | grep -i loca | cut -d' ' -f2`/powerline/bindings/bash/powerline.sh
+function _update_ps1() {
+    PS1=$(powerline-shell $?)
+}
+
+if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
+    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+fi
+
 alias ll="ls -ltr"
 alias vi="vim"
 alias h="history"
@@ -42,6 +62,7 @@ alias dirs="dirs -v"
 alias tmux="tmux -u"
 alias name="find . -name"
 alias iname="find . -iname"
+alias awslocal="USE_SSL=1 awslocal"
 
 export HISTCONTROL=ignoreboth:erasedups   # no duplicate entries
 shopt -s histappend                       # append history file
@@ -69,3 +90,4 @@ test -f ~/.buz && {
 test -f ~/.dirs && {
   source ~/.dirs
 }
+export PATH="/usr/local/opt/node@10/bin:$PATH"

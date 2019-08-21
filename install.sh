@@ -47,14 +47,19 @@ test -d ~/.tmux/plugins/tpm || git clone https://github.com/tmux-plugins/tpm ~/.
 #
 # Command Tools
 #
-which tree || brew install tree
-which rg || brew install ripgrep
 which cocot || brew install cocot
+which bat || brew install bat
+which fzf || brew install fzf
+which parallel || brew install parallel
+which rg || brew install ripgrep
+which tree || brew install tree
 which sshpass || {
   brew tap hudochenkov/sshpass
   brew install sshpass
 }
 which ngrok || brew cask install ngrok
+which fcgi || brew install fcgi
+
 
 #
 # PHP
@@ -72,12 +77,18 @@ which composer || {
     composer global require phpmd/phpmd
     composer global require squizlabs/php_codesniffer
     composer global require sebastian/phpcpd
+    composer global require psy/psysh
 }
 
 #
 # Python
 #
 which python3 || brew install python3
+pip3 show powerlinex-status || {
+    pip3 install powerline-status
+    mkdir -p ~/.config/powerline
+    cp -r `pip3 show powerline-status | grep -i loca | cut -d' ' -f2`/powerline/config_files/ ~/.config/powerline/
+}
 
 #
 # AWS-CLI
@@ -85,6 +96,13 @@ which python3 || brew install python3
 which aws || {
   pip3 install --user --upgrade awscli
 }
+which awslocal || {
+  pip3 install awscli-local
+}
+whihch rclone || {
+  brew cask install rcloneosx
+}
+
 
 #
 # NodeJS Package Tools
@@ -126,7 +144,22 @@ which yarn || brew install yarn
 #
 # Golang
 #
-which go || brew install go
+which go || {
+  brew install go
+  go get -u golang.org/x/tools/cmd/godoc
+  go get -u github.com/golang/lint/golint
+  go get -u github.com/christophberger/goman
+}
+which gophernotes || {
+  which pkg-config || brew install pkg-config
+  which zmq || brew install zmq
+  which jupyter || brew install jupyter
+  which nteract || brew cask install nteract
+  go get -u github.com/gopherdata/gophernotes
+  mkdir -p ~/Library/Jupyter/kernels/gophernotes
+  cp $GOPATH/src/github.com/gopherdata/gophernotes/kernel/* ~/Library/Jupyter/kernels/gophernotes
+}
+
 
 #
 # Setup tools
@@ -140,14 +173,22 @@ which go || brew install go
 
 
 #
+# Using Swagger
+#
+brew install swagger-codegen
+
+#
 # Java8 & Maven
 #
 (java -version 2>&1 | grep 1.8) || {
   brew tap caskroom/cask
   brew tap caskroom/versions
   brew cask install java8
+  brew cask install homebrew/cask-versions/java8
 }
 which mvn || brew install maven
+
+
 
 #
 # Scala
@@ -181,8 +222,19 @@ which drone || {
 #
 which docker || {
   brew cask install docker
-  brew cask install docker-toolbox
+  brew install kompose
 }
+
+#
+# Kubernetes
+#
+which kubectl || {
+  brew install kubernetes-cli
+}
+which minikube || {
+  brew cask install minikube
+}
+
 
 
 #
@@ -199,12 +251,21 @@ which docker || {
 
 
 #
-# Loadin Testing
+# CI
+#
+which snapcraft || brew install snapcraft
+which circleci || brew install circleci
+
+
+#
+# Loading Testing
 #
 which jmeter || brew install jmeter
 which wrk || brew install wrk
 
 brew install bash-completion
+brew install bash-completion@2
+
 brew install docker-completion
 brew install docker-compose-completion
 brew install docker-machine-completion
@@ -215,3 +276,10 @@ brew install docker-machine-completion
 #brew reinstall ffmpeg -HEAD $(brew options ffmpeg | grep with-)
 #brew install theora
 #brew install vorbis-tools
+
+
+which linkcheck || {
+  brew tap dart-lang/dart
+  brew install dart
+  pub global activate linkcheck
+}
