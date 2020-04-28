@@ -19,6 +19,7 @@ which brew || {
 # git & completion
 #
 brew list bash-completion || brew install git bash-completion
+which git-flow || brew install git-flow
 
 #
 # dotfiles
