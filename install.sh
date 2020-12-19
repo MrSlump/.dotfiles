@@ -21,6 +21,7 @@ which brew || {
 brew list bash-completion || brew install git bash-completion
 which git-flow || brew install git-flow
 
+
 #
 # dotfiles
 #
@@ -284,3 +285,7 @@ which linkcheck || {
   brew install dart
   pub global activate linkcheck
 }
+
+
+
+which cntlm || brew install cntlm

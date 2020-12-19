@@ -37,6 +37,16 @@ test -f ~/.dotfiles/git-prompt.sh && {
   source ~/.dotfiles/git-prompt.sh
 }
 
+#git config --global http.proxy http://$proxy:$proxyport
+#export ftp_proxy=$http_proxy
+#export rsync_proxy=$http_proxy
+#export no_proxy="localhost,127.0.0.1,*.local,*.intranet,169.254/16"
+#export ANT_OPTS="-Dhttp.proxyHost $proxy -Dhttp.proxyPort $proxyport"
+#export npm_config_proxy=$http_proxy
+#export npm_config_https_proxy=$https_proxy
+#export JAVA_OPTS=$ANT_OPTS
+#export SBT_OPTS=$JAVA_OPTS
+#git config --global http.proxy http://$proxy:$proxyport
 
 export LC_ALL=en_US.UTF-8
 export PATH=$PATH:$HOME/Library/Python/2.7/bin
@@ -91,3 +101,5 @@ test -f ~/.dirs && {
   source ~/.dirs
 }
 export PATH="/usr/local/opt/node@10/bin:$PATH"
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
