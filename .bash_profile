@@ -1,3 +1,7 @@
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/yanagi.tarou/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
 # Source global definitions
 #test -f /etc/bashrc && . /etc/bashrc
 
@@ -10,8 +14,8 @@ set -o vi
 
 export PSQL_EDITOR='vim +"set syntax=sql" '
 
-export PATH=/usr/local/bin:$PATH
-#export PATH=$PATH:`npm bin`
+#jj::xexport PATH=/usr/local/bin:$PATH
+export PATH=$PATH:`npm bin`
 export PATH=$PATH:~/MyInstall
 export PATH=$PATH:~/.composer/vendor/bin
 export PATH=$PATH:~/.pub-cache/bin
@@ -103,3 +107,4 @@ test -f ~/.dirs && {
 export PATH="/usr/local/opt/node@10/bin:$PATH"
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"

@@ -8,8 +8,11 @@ xcode-select -p || xcode-select --install
 #
 # Homebrew
 #
+export PATH=/opt/homebrew/bin:$PATH
 which brew || {
-  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/yanagi.tarou/.zprofile
+  eval "$(/opt/homebrew/bin/brew shellenv)"
   brew tap caskroom/cask
   brew tap homebrew/completions
   brew update
@@ -19,7 +22,9 @@ which brew || {
 # git & completion
 #
 brew list bash-completion || brew install git bash-completion
+brew list zsh-completion || brew install git zsh-completion
 which git-flow || brew install git-flow
+which gh || brew install gh
 
 
 #
@@ -60,6 +65,7 @@ which sshpass || {
   brew install sshpass
 }
 which ngrok || brew cask install ngrok
+which ngrok || brew install ngrok/ngrok/ngrok
 which fcgi || brew install fcgi
 
 
@@ -104,6 +110,9 @@ which awslocal || {
 whihch rclone || {
   brew cask install rcloneosx
 }
+brew install kayac/tap/ecspresso
+brew install session-manager-plugin
+
 
 
 #
@@ -189,6 +198,7 @@ brew install swagger-codegen
   brew cask install homebrew/cask-versions/java8
 }
 which mvn || brew install maven
+brew install --cask graalvm-jdk@17
 
 
 
@@ -226,6 +236,9 @@ which docker || {
   brew cask install docker
   brew install kompose
 }
+brew install orbstack
+brew install podman
+
 
 #
 # Kubernetes
@@ -288,4 +301,16 @@ which linkcheck || {
 
 
 
+## ip & port foward
+brew install caddy
+brew install mkcert
+
 which cntlm || brew install cntlm
+
+
+##  DB tools
+brew install --cask dbeaver-community
+
+## ip & port foward
+#brew install terrform
+brew install tfenv
