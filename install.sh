@@ -1,306 +1,433 @@
-#!/bin/zsh -eux
+#!/bin/zsh -eu
 
 # ==============================================================================
 # macOS Development Environment Setup Script (zsh)
 # ==============================================================================
 
+set -o pipefail
+
+# Helper: print section headers
+section() {
+  echo ""
+  echo "======================================================================"
+  echo " $1"
+  echo "======================================================================"
+  echo ""
+}
+
 # ==============================================================================
 # System Prerequisites
 # ==============================================================================
 
+section "System Prerequisites"
+
 #
 # Xcode Command Line Tools
 #
-xcode-select -p || xcode-select --install
+if ! xcode-select -p &>/dev/null; then
+  echo "Installing Xcode Command Line Tools..."
+  xcode-select --install
+  echo "⏳ Waiting for Xcode CLT installation to complete..."
+  echo "   Press ENTER after the installation finishes."
+  read -r
+fi
 
 #
 # Homebrew
 #
-export PATH=/opt/homebrew/bin:$PATH
-which brew || {
+export PATH="/opt/homebrew/bin:$PATH"
+if ! command -v brew &>/dev/null; then
+  echo "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ${HOME}/.zprofile
+  {
+    echo ''
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"'
+  } >> "${HOME}/.zprofile"
   eval "$(/opt/homebrew/bin/brew shellenv)"
   brew update
-}
+else
+  echo "Homebrew already installed."
+fi
 
 # ==============================================================================
 # Shell & Completions
 # ==============================================================================
 
-brew list zsh-completions || brew install zsh-completions
-brew install docker-completion
-brew install docker-compose-completion
-brew install docker-machine-completion
+section "Shell & Completions"
+
+brew list zsh-completions &>/dev/null || brew install zsh-completions
+brew list docker-completion &>/dev/null || brew install docker-completion
+brew list docker-compose-completion &>/dev/null || brew install docker-compose-completion
 
 # ==============================================================================
 # Version Control
 # ==============================================================================
 
-brew list git || brew install git
-which git-flow || brew install git-flow
-which gh || brew install gh
+section "Version Control"
+
+brew list git &>/dev/null || brew install git
+command -v git-flow &>/dev/null || brew install git-flow
+command -v gh &>/dev/null || brew install gh
 
 # ==============================================================================
 # Dotfiles
 # ==============================================================================
 
-test -d ~/.dotfiles || {
+section "Dotfiles"
+
+if [[ ! -d ~/.dotfiles ]]; then
   git clone https://github.com/TaroYanagi/.dotfiles.git ~/.dotfiles
-  find ~/.dotfiles -maxdepth 1 -type f -name '.*' -exec ln -s {} ~ \;
-}
+  find ~/.dotfiles -maxdepth 1 -type f -name '.*' -exec ln -sf {} ~ \;
+else
+  echo "Dotfiles already cloned."
+fi
 
 # ==============================================================================
 # Editor (Vim)
 # ==============================================================================
 
-(vim --version | grep +clip) || {
+section "Editor (Vim)"
+
+if ! vim --version 2>/dev/null | grep -q '+clipboard'; then
   brew install vim
+fi
+
+if [[ ! -d ~/.vim/bundle/Vundle.vim ]]; then
   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-  vim +PlugInstall +qall
-}
+  vim +PluginInstall +qall
+else
+  echo "Vundle already installed."
+fi
 
 # ==============================================================================
 # Terminal Multiplexer (Tmux)
 # ==============================================================================
 
-which tmux || brew install tmux
-which reattach-to-user-namespace || brew install reattach-to-user-namespace
-test -d ~/.tmux/plugins/tpm || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+section "Terminal Multiplexer (Tmux)"
+
+command -v tmux &>/dev/null || brew install tmux
+command -v reattach-to-user-namespace &>/dev/null || brew install reattach-to-user-namespace
+
+if [[ ! -d ~/.tmux/plugins/tpm ]]; then
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+else
+  echo "TPM already installed."
+fi
 
 # ==============================================================================
 # CLI Utilities
 # ==============================================================================
 
-which cocot   || brew install cocot
-which bat     || brew install bat
-which fzf     || brew install fzf
-which parallel || brew install parallel
-which rg      || brew install ripgrep
-which tree    || brew install tree
-which sshpass || {
+section "CLI Utilities"
+
+command -v cocot &>/dev/null || brew install cocot
+command -v bat &>/dev/null || brew install bat
+command -v fzf &>/dev/null || brew install fzf
+command -v parallel &>/dev/null || brew install parallel
+command -v rg &>/dev/null || brew install ripgrep
+command -v tree &>/dev/null || brew install tree
+
+if ! command -v sshpass &>/dev/null; then
   brew tap hudochenkov/sshpass
-  brew install sshpass
-}
-which ngrok || brew install ngrok/ngrok/ngrok
-which fcgi  || brew install fcgi
+  brew install hudochenkov/sshpass/sshpass
+fi
+
+command -v ngrok &>/dev/null || brew install ngrok/ngrok/ngrok
+
+# fcgi: install the library, not a binary
+brew list fcgi &>/dev/null || brew install fcgi
 
 # ==============================================================================
 # Networking & Security
 # ==============================================================================
 
-which cntlm || brew install cntlm
-brew install caddy
-brew install mkcert
+section "Networking & Security"
+
+command -v cntlm &>/dev/null || brew install cntlm
+brew list caddy &>/dev/null || brew install caddy
+brew list mkcert &>/dev/null || brew install mkcert
 
 # ==============================================================================
 # Languages & Runtimes
 # ==============================================================================
 
+section "Languages & Runtimes"
+
 # ------------------------------------------------------------------------------
 # PHP
 # ------------------------------------------------------------------------------
 
-which composer || {
-  brew install composer
+echo "--- PHP ---"
 
-  composer global require pdepend/pdepend
-  composer global require phing/phing
-  composer global require phploc/phploc
-  composer global require phpunit/phpunit
-  composer global require phpunit/dbunit
-  composer global require phpdocumentor/phpdocumentor
-  composer global require phpmetrics/phpmetrics
-  composer global require phpmd/phpmd
-  composer global require squizlabs/php_codesniffer
-  composer global require sebastian/phpcpd
-  composer global require psy/psysh
-}
+if ! command -v composer &>/dev/null; then
+  brew install composer
+fi
+
+if command -v composer &>/dev/null; then
+  composer global require --no-interaction \
+    pdepend/pdepend \
+    phing/phing \
+    phploc/phploc \
+    phpunit/phpunit \
+    phpdocumentor/phpdocumentor \
+    phpmetrics/phpmetrics \
+    phpmd/phpmd \
+    squizlabs/php_codesniffer \
+    sebastian/phpcpd \
+    psy/psysh \
+    || true
+fi
 
 # ------------------------------------------------------------------------------
 # Python
 # ------------------------------------------------------------------------------
 
-which python3 || brew install python3
-pip3 show powerline-status || {
-  pip3 install powerline-status
+echo "--- Python ---"
+
+command -v python3 &>/dev/null || brew install python3
+
+if ! python3 -m pip show powerline-status &>/dev/null; then
+  python3 -m pip install --break-system-packages powerline-status || \
+    python3 -m pip install powerline-status || true
+
   mkdir -p ~/.config/powerline
   local powerline_location
-  powerline_location=$(pip3 show powerline-status | grep -i loca | cut -d' ' -f2)
-  cp -r "${powerline_location}/powerline/config_files/" ~/.config/powerline/
-}
+  powerline_location=$(python3 -m pip show powerline-status 2>/dev/null | grep -i '^Location' | cut -d' ' -f2)
+  if [[ -n "${powerline_location}" && -d "${powerline_location}/powerline/config_files" ]]; then
+    cp -r "${powerline_location}/powerline/config_files/" ~/.config/powerline/
+  fi
+else
+  echo "powerline-status already installed."
+fi
 
 # ------------------------------------------------------------------------------
 # Node.js
 # ------------------------------------------------------------------------------
 
-which npm  || brew install npm
-which yarn || brew install yarn
+echo "--- Node.js ---"
+
+command -v node &>/dev/null || brew install node
+command -v yarn &>/dev/null || brew install yarn
 
 # ------------------------------------------------------------------------------
 # Golang
 # ------------------------------------------------------------------------------
 
-which go || {
+echo "--- Golang ---"
+
+if ! command -v go &>/dev/null; then
   brew install go
-  go install golang.org/x/tools/cmd/godoc@latest
-  go install golang.org/x/lint/golint@latest
-  go install github.com/christophberger/goman@latest
-}
-which gophernotes || {
-  which pkg-config || brew install pkg-config
-  which zmq        || brew install zmq
-  which jupyter    || brew install jupyter
-  which nteract    || brew install --cask nteract
-  go install github.com/gopherdata/gophernotes@latest
-  mkdir -p ~/Library/Jupyter/kernels/gophernotes
-  cp ${GOPATH}/src/github.com/gopherdata/gophernotes/kernel/* ~/Library/Jupyter/kernels/gophernotes
-}
+fi
+
+if command -v go &>/dev/null; then
+  export GOPATH="${GOPATH:-$HOME/go}"
+  export PATH="$GOPATH/bin:$PATH"
+
+  go install golang.org/x/tools/cmd/godoc@latest 2>/dev/null || true
+  go install github.com/christophberger/goman@latest 2>/dev/null || true
+fi
+
+# gophernotes (optional — may fail if zmq build is problematic)
+if ! command -v gophernotes &>/dev/null; then
+  echo "Attempting gophernotes setup (optional)..."
+  command -v pkg-config &>/dev/null || brew install pkg-config
+  brew list zeromq &>/dev/null || brew install zeromq
+  command -v jupyter &>/dev/null || brew install jupyter
+
+  go install github.com/gopherdata/gophernotes@latest 2>/dev/null || true
+
+  if command -v gophernotes &>/dev/null; then
+    mkdir -p ~/Library/Jupyter/kernels/gophernotes
+    # Attempt to copy kernel config if source exists
+    local gophernotes_pkg="${GOPATH}/pkg/mod/github.com/gopherdata"
+    if [[ -d "${gophernotes_pkg}" ]]; then
+      local kernel_dir
+      kernel_dir=$(find "${gophernotes_pkg}" -type d -name 'kernel' 2>/dev/null | head -1)
+      if [[ -n "${kernel_dir}" ]]; then
+        cp "${kernel_dir}"/* ~/Library/Jupyter/kernels/gophernotes/ 2>/dev/null || true
+      fi
+    fi
+  fi
+else
+  echo "gophernotes already installed."
+fi
 
 # ------------------------------------------------------------------------------
 # Java & JVM
 # ------------------------------------------------------------------------------
 
-which java || {
-  brew install --cask temurin
-}
-which mvn || brew install maven
-brew install --cask graalvm-jdk@17
+echo "--- Java & JVM ---"
+
+command -v java &>/dev/null || brew install --cask temurin
+command -v mvn &>/dev/null || brew install maven
+
+# GraalVM (optional, may need specific version)
+brew list --cask graalvm-jdk 2>/dev/null || brew install --cask graalvm-jdk || true
 
 # ------------------------------------------------------------------------------
 # Scala
 # ------------------------------------------------------------------------------
 
-brew install sbt
+echo "--- Scala ---"
+
+brew list sbt &>/dev/null || brew install sbt
 
 # ------------------------------------------------------------------------------
 # Kotlin
 # ------------------------------------------------------------------------------
 
-which kotlin || brew install kotlin
+echo "--- Kotlin ---"
+
+command -v kotlin &>/dev/null || brew install kotlin
 
 # ------------------------------------------------------------------------------
 # Dart
 # ------------------------------------------------------------------------------
 
-which linkcheck || {
+echo "--- Dart ---"
+
+if ! command -v dart &>/dev/null; then
   brew tap dart-lang/dart
   brew install dart
-  dart pub global activate linkcheck
-}
+fi
 
 # ==============================================================================
 # Cloud & Infrastructure
 # ==============================================================================
 
+section "Cloud & Infrastructure"
+
 # ------------------------------------------------------------------------------
 # AWS
 # ------------------------------------------------------------------------------
 
-which aws || {
-  pip3 install --user --upgrade awscli
-}
-which awslocal || {
-  pip3 install awscli-local
-}
-which rclone || {
-  brew install --cask rclone
-}
-brew install kayac/tap/ecspresso
-brew install session-manager-plugin
+echo "--- AWS ---"
+
+if ! command -v aws &>/dev/null; then
+  brew install awscli
+fi
+
+if ! command -v awslocal &>/dev/null; then
+  python3 -m pip install --break-system-packages awscli-local || \
+    python3 -m pip install awscli-local || true
+fi
+
+command -v rclone &>/dev/null || brew install rclone
+
+# ecspresso
+brew list kayac/tap/ecspresso &>/dev/null || {
+  brew tap kayac/tap
+  brew install kayac/tap/ecspresso
+} || true
+
+# session-manager-plugin
+brew list session-manager-plugin &>/dev/null || brew install session-manager-plugin || true
 
 # ------------------------------------------------------------------------------
 # Terraform
 # ------------------------------------------------------------------------------
 
-#brew install terraform
-brew install tfenv
+echo "--- Terraform ---"
+
+brew list tfenv &>/dev/null || brew install tfenv
 
 # ------------------------------------------------------------------------------
 # BOSH (Cloud Foundry)
 # ------------------------------------------------------------------------------
 
-which bosh || {
-  brew tap cloudfoundry/tap
-  brew install bosh-cli
-}
+echo "--- BOSH ---"
+
+if ! command -v bosh &>/dev/null; then
+  brew tap cloudfoundry/tap 2>/dev/null || true
+  brew install bosh-cli || true
+fi
 
 # ==============================================================================
 # Containers & Orchestration
 # ==============================================================================
 
+section "Containers & Orchestration"
+
 # ------------------------------------------------------------------------------
 # Docker
 # ------------------------------------------------------------------------------
 
-which docker || {
-  brew install --cask docker
-  brew install kompose
-}
-brew install orbstack
-brew install podman
+echo "--- Docker ---"
+
+if ! command -v docker &>/dev/null; then
+  brew install --cask docker || true
+fi
+
+brew list kompose &>/dev/null || brew install kompose || true
+brew list orbstack &>/dev/null || brew install orbstack || true
+brew list podman &>/dev/null || brew install podman || true
 
 # ------------------------------------------------------------------------------
 # Kubernetes
 # ------------------------------------------------------------------------------
 
-which kubectl || {
-  brew install kubernetes-cli
-}
-which minikube || {
-  brew install --cask minikube
-}
+echo "--- Kubernetes ---"
+
+command -v kubectl &>/dev/null || brew install kubernetes-cli
+command -v minikube &>/dev/null || brew install minikube
 
 # ==============================================================================
 # CI/CD
 # ==============================================================================
 
-which drone || {
-  brew tap drone/drone
-  brew install drone
-}
-which snapcraft || brew install snapcraft
-which circleci  || brew install circleci
+section "CI/CD"
+
+if ! command -v drone &>/dev/null; then
+  brew tap drone/drone 2>/dev/null || true
+  brew install drone || true
+fi
+
+command -v circleci &>/dev/null || brew install circleci || true
 
 # ==============================================================================
 # API & Documentation
 # ==============================================================================
 
-brew install swagger-codegen
+section "API & Documentation"
+
+brew list swagger-codegen &>/dev/null || brew install swagger-codegen || true
 
 # ==============================================================================
 # Database Tools
 # ==============================================================================
 
-brew install --cask dbeaver-community
+section "Database Tools"
+
+brew list --cask dbeaver-community &>/dev/null || brew install --cask dbeaver-community || true
 
 # ==============================================================================
 # Performance & Load Testing
 # ==============================================================================
 
-which jmeter || brew install jmeter
-which wrk    || brew install wrk
+section "Performance & Load Testing"
+
+command -v jmeter &>/dev/null || brew install jmeter || true
+command -v wrk &>/dev/null || brew install wrk
 
 # ==============================================================================
 # Multimedia (commented out)
 # ==============================================================================
 
-#brew reinstall ffmpeg -HEAD $(brew options ffmpeg | grep with-)
-#brew install theora
-#brew install vorbis-tools
+# brew install ffmpeg
+# brew install theora
+# brew install vorbis-tools
 
 # ==============================================================================
 # Virtualization (commented out)
 # ==============================================================================
 
-#which virtualbox || brew install --cask virtualbox
-#which vagrant || {
-#  brew install --cask vagrant
-#  brew install --cask vagrant-manager
-#}
+# brew install --cask virtualbox
+# brew install --cask vagrant
+# brew install --cask vagrant-manager
 
 # ==============================================================================
 # Setup Complete
 # ==============================================================================
 
+section "Done"
 echo "✅ Development environment setup complete!"
