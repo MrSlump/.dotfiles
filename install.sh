@@ -208,6 +208,8 @@ echo "--- Node.js ---"
 
 command -v node &>/dev/null || brew install node
 command -v yarn &>/dev/null || brew install yarn
+command -v npm &>/dev/null || brew install npm
+command -v npx &>/dev/null || brew install npx
 
 # ------------------------------------------------------------------------------
 # Golang
